@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "youtube-analyzer/target/*.jar",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "youtube-analyzer/target/$1"
+    }
+  ],
+  "env": {
+    "YOUTUBE_API_KEY": "${YOUTUBE_API_KEY}",
+    "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+  }
+}
