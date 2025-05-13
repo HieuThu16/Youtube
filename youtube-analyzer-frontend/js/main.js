@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const API_BASE_URL =
     "https://youtube-analyzer-backend.onrender.com/api/youtube";
 
-  console.log("Sử dụng API URL:", API_BASE_URL);
+  // Log URL để kiểm tra
+  console.log("API URL được sử dụng:", API_BASE_URL);
 
   // Format date
   function formatDate(dateString) {
@@ -108,8 +109,11 @@ document.addEventListener("DOMContentLoaded", function () {
     errorMessage.classList.add("d-none");
     resultsContainer.classList.add("d-none");
 
+    const apiUrl = `${API_BASE_URL}/analyze`;
+    console.log("Gọi API tại URL:", apiUrl);
+
     // Call API to analyze channel
-    fetch(`${API_BASE_URL}/analyze`, {
+    fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -10,5 +10,15 @@
       Nếu bạn không được chuyển hướng tự động,
       <a href="html/index.html">nhấn vào đây</a>.
     </p>
+    <script>
+      // Xóa cache để đảm bảo tải main.js mới nhất
+      document.addEventListener("DOMContentLoaded", function () {
+        // Clear cache for main.js
+        const scriptElement = document.createElement("script");
+        const timestamp = new Date().getTime();
+        scriptElement.src = "js/main.js?v=" + timestamp;
+        document.body.appendChild(scriptElement);
+      });
+    </script>
   </body>
 </html>
