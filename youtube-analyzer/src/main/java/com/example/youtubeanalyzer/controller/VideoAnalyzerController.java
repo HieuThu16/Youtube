@@ -56,7 +56,10 @@ public class VideoAnalyzerController {
         try {
             if (channelUrl == null || channelUrl.isEmpty()) {
                 logger.warning("URL kênh bị trống");
-                return ResponseEntity.badRequest().body(Map.of("error", "Channel URL is required"));
+                return ResponseEntity.badRequest().body(Map.of(
+                        "error", "Channel URL is required",
+                        "timestamp", System.currentTimeMillis()
+                ));
             }
 
             // Chuẩn hóa URL nếu cần
@@ -72,13 +75,27 @@ public class VideoAnalyzerController {
             return ResponseEntity.ok(videos);
         } catch (IllegalArgumentException e) {
             logger.warning("Lỗi đối số khi phân tích kênh '" + channelUrl + "': " + e.getMessage());
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage(),
+                    "channelUrl", channelUrl,
+                    "timestamp", System.currentTimeMillis()
+            ));
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Lỗi I/O khi truy cập YouTube API cho kênh '" + channelUrl + "': " + e.getMessage(), e);
-            return ResponseEntity.status(500).body(Map.of("error", "Error accessing YouTube API: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Error accessing YouTube API: " + e.getMessage(),
+                    "channelUrl", channelUrl,
+                    "timestamp", System.currentTimeMillis(),
+                    "type", "IOException"
+            ));
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Lỗi không xác định khi phân tích kênh '" + channelUrl + "'", e);
-            return ResponseEntity.status(500).body(Map.of("error", "Unexpected error: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Unexpected error: " + e.getMessage(),
+                    "channelUrl", channelUrl,
+                    "timestamp", System.currentTimeMillis(),
+                    "type", e.getClass().getSimpleName()
+            ));
         }
     }
 
