@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoResults = document.getElementById("videoResults");
   const videoCardTemplate = document.getElementById("videoCardTemplate");
 
+  // System log elements
+  const systemLogContainer = document.getElementById("systemLogContainer");
+  const environmentInfo = document.getElementById("environmentInfo");
+  const hostnameInfo = document.getElementById("hostnameInfo");
+  const apiUrlInfo = document.getElementById("apiUrlInfo");
+  const apiStatusInfo = document.getElementById("apiStatusInfo");
+  const toggleLogBtn = document.getElementById("toggleLogBtn");
+
   // API URL - Tự động chọn dựa trên môi trường
   const config = {
     development: {
@@ -23,6 +31,37 @@ document.addEventListener("DOMContentLoaded", function () {
   const API_BASE_URL = isProduction
     ? config.production.apiUrl
     : config.development.apiUrl;
+
+  // Cập nhật thông tin hệ thống trên UI
+  function updateSystemInfo() {
+    environmentInfo.textContent = isProduction ? "Production" : "Development";
+    hostnameInfo.textContent = window.location.hostname;
+    apiUrlInfo.textContent = API_BASE_URL;
+
+    // Kiểm tra trạng thái API
+    fetch(`${API_BASE_URL}/health`, { method: "GET" })
+      .then((response) => {
+        if (response.ok) {
+          apiStatusInfo.textContent = "Hoạt động";
+          apiStatusInfo.className = "text-success";
+        } else {
+          apiStatusInfo.textContent = "Lỗi kết nối";
+          apiStatusInfo.className = "text-danger";
+        }
+      })
+      .catch((error) => {
+        apiStatusInfo.textContent = "Không thể kết nối";
+        apiStatusInfo.className = "text-danger";
+      });
+  }
+
+  // Khởi tạo thông tin hệ thống
+  updateSystemInfo();
+
+  // Xử lý nút hiện/ẩn khung log
+  toggleLogBtn.addEventListener("click", function () {
+    systemLogContainer.classList.toggle("d-none");
+  });
 
   console.log("Môi trường:", isProduction ? "Production" : "Development");
   console.log("API URL được sử dụng:", API_BASE_URL);
@@ -123,6 +162,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const normalizedUrl = normalizeYouTubeUrl(channelUrl);
     console.log("Gửi yêu cầu phân tích kênh:", normalizedUrl);
 
+    // Cập nhật thông tin API trong khung log
+    apiStatusInfo.textContent = "Đang gửi yêu cầu...";
+    apiStatusInfo.className = "text-warning";
+
     // Show loading indicator
     loadingIndicator.classList.remove("d-none");
     errorMessage.classList.add("d-none");
@@ -146,6 +189,15 @@ document.addEventListener("DOMContentLoaded", function () {
           "Request body:",
           JSON.stringify({ channelUrl: normalizedUrl })
         );
+
+        // Cập nhật trạng thái API
+        if (response.ok) {
+          apiStatusInfo.textContent = "Hoạt động (Mã: " + response.status + ")";
+          apiStatusInfo.className = "text-success";
+        } else {
+          apiStatusInfo.textContent = "Lỗi (Mã: " + response.status + ")";
+          apiStatusInfo.className = "text-danger";
+        }
 
         if (!response.ok) {
           return response.json().then((data) => {
@@ -183,6 +235,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Lỗi:", error);
+
+        // Cập nhật trạng thái API trong khung log
+        apiStatusInfo.textContent = "Không thể kết nối";
+        apiStatusInfo.className = "text-danger";
+
         if (error.message === "Failed to fetch") {
           // Hiển thị thông báo lỗi chi tiết khi không kết nối được API
           let errorMsg = `Không thể kết nối đến server API tại ${API_BASE_URL}. `;

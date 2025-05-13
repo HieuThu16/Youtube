@@ -43,6 +43,39 @@
               </form>
             </div>
           </div>
+
+          <!-- Khung hiển thị thông tin log -->
+          <div class="card mb-4">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Thông tin hệ thống</span>
+              <button
+                id="toggleLogBtn"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                Hiện/Ẩn
+              </button>
+            </div>
+            <div class="card-body" id="systemLogContainer">
+              <div class="system-log">
+                <div class="mb-2">
+                  <strong>Môi trường:</strong>
+                  <span id="environmentInfo"></span>
+                </div>
+                <div class="mb-2">
+                  <strong>Hostname:</strong> <span id="hostnameInfo"></span>
+                </div>
+                <div class="mb-2">
+                  <strong>API URL:</strong> <span id="apiUrlInfo"></span>
+                </div>
+                <div class="mb-2">
+                  <strong>Trạng thái API:</strong>
+                  <span id="apiStatusInfo">Chưa kiểm tra</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

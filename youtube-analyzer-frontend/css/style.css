@@ -1,7 +1,7 @@
 /* Main styles */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #f9f9f9;
 }
 
 .container {
@@ -15,14 +15,14 @@ body {
 }
 
 .btn-primary {
-  background-color: #ff0000;
-  border-color: #ff0000;
+  background-color: #4361ee;
+  border-color: #3f57e3;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #cc0000;
-  border-color: #cc0000;
+  background-color: #3a56e4;
+  border-color: #3048c8;
 }
 
 .btn-outline-primary {
@@ -39,7 +39,8 @@ body {
 /* Card styles */
 .card {
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: none;
   transition: transform 0.3s ease;
 }
 
@@ -47,11 +48,16 @@ body {
   transform: translateY(-5px);
 }
 
+.card-header {
+  background-color: #f1f3f5;
+  border-bottom: 1px solid #e9ecef;
+}
+
 .video-thumbnail {
   width: 120px;
   height: 68px;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .video-title {
@@ -106,4 +112,31 @@ body {
     display: inline-block;
     margin-bottom: 5px;
   }
+}
+
+/* CSS cho khung thông tin log */
+.system-log {
+  font-size: 0.9rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.system-log strong {
+  color: #495057;
+}
+
+.text-success {
+  color: #28a745 !important;
+  font-weight: bold;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+  font-weight: bold;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: bold;
 }
