@@ -106,6 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
   analyzeForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    // Log thông tin môi trường và API ngay khi form được submit
+    console.log("----------------------");
+    console.log("THÔNG TIN API REQUEST:");
+    console.log("Môi trường:", isProduction ? "Production" : "Development");
+    console.log("API URL gốc:", API_BASE_URL);
+    console.log("----------------------");
+
     const channelUrl = channelUrlInput.value.trim();
     if (!channelUrl) {
       showError("Vui lòng nhập URL kênh YouTube.");
@@ -134,6 +141,12 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => {
         console.log("Mã trạng thái phản hồi:", response.status);
+        console.log("URL API được gọi:", apiUrl);
+        console.log(
+          "Request body:",
+          JSON.stringify({ channelUrl: normalizedUrl })
+        );
+
         if (!response.ok) {
           return response.json().then((data) => {
             console.error("Lỗi từ server:", data);
