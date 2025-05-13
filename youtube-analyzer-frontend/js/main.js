@@ -8,10 +8,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoResults = document.getElementById("videoResults");
   const videoCardTemplate = document.getElementById("videoCardTemplate");
 
-  // API URL - Cập nhật URL backend chính xác
-  const API_BASE_URL = "https://youtube-5cvw.onrender.com/api/youtube";
+  // API URL - Tự động chọn dựa trên môi trường
+  const config = {
+    development: {
+      apiUrl: "http://localhost:8080/api/youtube",
+    },
+    production: {
+      apiUrl: "https://youtube-5cvw.onrender.com/api/youtube",
+    },
+  };
 
-  // Log URL để kiểm tra
+  // Nếu không phải localhost thì dùng URL production
+  const isProduction = window.location.hostname !== "localhost";
+  const API_BASE_URL = isProduction
+    ? config.production.apiUrl
+    : config.development.apiUrl;
+
+  console.log("Môi trường:", isProduction ? "Production" : "Development");
   console.log("API URL được sử dụng:", API_BASE_URL);
 
   // Format date
@@ -157,7 +170,21 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Lỗi:", error);
-        showError(error.message || "Có lỗi xảy ra khi phân tích kênh YouTube.");
+        if (error.message === "Failed to fetch") {
+          // Hiển thị thông báo lỗi chi tiết khi không kết nối được API
+          let errorMsg = `Không thể kết nối đến server API tại ${API_BASE_URL}. `;
+          if (!isProduction) {
+            errorMsg +=
+              "Kiểm tra xem server backend đã chạy chưa (localhost:8080).";
+          } else {
+            errorMsg += "Vui lòng thử lại sau hoặc liên hệ quản trị viên.";
+          }
+          showError(errorMsg);
+        } else {
+          showError(
+            error.message || "Có lỗi xảy ra khi phân tích kênh YouTube."
+          );
+        }
       });
   });
 });

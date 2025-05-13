@@ -11,6 +11,10 @@
       <a href="html/index.html">nhấn vào đây</a>.
     </p>
     <script>
+      // Kiểm tra môi trường
+      const isProduction = window.location.hostname !== "localhost";
+      console.log("Môi trường:", isProduction ? "Production" : "Development");
+
       // Xóa cache để đảm bảo tải main.js mới nhất
       document.addEventListener("DOMContentLoaded", function () {
         // Clear cache for main.js
