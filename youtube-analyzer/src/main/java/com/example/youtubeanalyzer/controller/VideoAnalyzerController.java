@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +20,22 @@ import com.example.youtubeanalyzer.service.VideoAnalyzerService;
 
 @RestController
 @RequestMapping("/api/youtube")
-@CrossOrigin(origins = "*")
 public class VideoAnalyzerController {
 
     private static final Logger logger = Logger.getLogger(VideoAnalyzerController.class.getName());
 
     @Autowired
     private VideoAnalyzerService videoAnalyzerService;
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        logger.info("Test endpoint được gọi");
+        return ResponseEntity.ok(Map.of(
+                "status", "ok",
+                "message", "API đang hoạt động",
+                "timestamp", System.currentTimeMillis()
+        ));
+    }
 
     @PostMapping("/analyze")
     public ResponseEntity<?> analyzeChannel(@RequestBody Map<String, String> request) {

@@ -29,121 +29,59 @@ public class YouTubeService {
     private int videosPerBatch;
 
     public String getChannelIdFromUrl(String channelUrl) throws IOException {
-        logger.info("Xử lý URL kênh: " + channelUrl);
+        logger.info("Đang lấy channel ID từ URL: " + channelUrl);
 
-        // Xử lý đặc biệt cho kênh Web5ngay
-        if (channelUrl.toLowerCase().contains("web5ngay")
-                || channelUrl.toLowerCase().contains("web 5 ngay")
-                || channelUrl.contains("@Web5Ngay")) {
-
-            logger.info("Phát hiện kênh Web5ngay, sử dụng URL chính thức");
-            channelUrl = "https://www.youtube.com/@Web5Ngay";
-
-            // Thực hiện gọi API trực tiếp để lấy channel ID
-            YouTube.Search.List request = youTube.search()
-                    .list("snippet")
-                    .setKey(apiKey)
-                    .setQ("Web5ngay")
-                    .setType("channel")
-                    .setMaxResults(1L);
-
-            SearchListResponse response = request.execute();
-            if (response.getItems() != null && !response.getItems().isEmpty()) {
-                String channelId = response.getItems().get(0).getId().getChannelId();
-                logger.info("Đã tìm thấy channel ID cho Web5ngay: " + channelId);
-                return channelId;
+        // Xử lý trường hợp URL chứa @username
+        if (channelUrl.contains("/@")) {
+            String username = channelUrl.substring(channelUrl.lastIndexOf("/@") + 2);
+            // Loại bỏ các tham số query nếu có
+            if (username.contains("?")) {
+                username = username.substring(0, username.indexOf("?"));
             }
-        }
+            logger.info("Phát hiện URL loại @username: " + username);
 
-        // Extract username or channel ID from URL
-        String username = null;
-        String channelId = null;
-        String customUrl = null;
-
-        if (channelUrl.contains("/user/")) {
-            logger.info("Phát hiện định dạng URL /user/");
-            username = channelUrl.substring(channelUrl.indexOf("/user/") + 6);
-            username = username.split("/")[0];
-            logger.info("Đã trích xuất username: " + username);
-
-            // Get channel ID from username
+            // Gọi API để tìm channel ID từ username
             YouTube.Channels.List request = youTube.channels()
                     .list("id")
-                    .setKey(apiKey)
-                    .setForUsername(username);
+                    .setForUsername(username)
+                    .setKey(apiKey);
 
             ChannelListResponse response = request.execute();
+
             if (response.getItems() != null && !response.getItems().isEmpty()) {
-                channelId = response.getItems().get(0).getId();
-                logger.info("Đã tìm thấy channel ID từ username: " + channelId);
-            } else {
-                logger.warning("Không tìm thấy kênh với username: " + username);
+                String channelId = response.getItems().get(0).getId();
+                logger.info("Đã tìm thấy channel ID: " + channelId);
+                return channelId;
             }
-        } else if (channelUrl.contains("/channel/")) {
-            logger.info("Phát hiện định dạng URL /channel/");
-            channelId = channelUrl.substring(channelUrl.indexOf("/channel/") + 9);
-            channelId = channelId.split("/")[0];
-            logger.info("Đã trích xuất channel ID: " + channelId);
-        } else if (channelUrl.contains("/@")) {
-            logger.info("Phát hiện định dạng URL /@");
-            String handle = channelUrl.substring(channelUrl.indexOf("/@") + 2);
-            handle = handle.split("/")[0];
-            logger.info("Đã trích xuất handle: " + handle);
 
-            YouTube.Search.List request = youTube.search()
-                    .list("snippet")
-                    .setKey(apiKey)
-                    .setQ("@" + handle)
-                    .setType("channel")
-                    .setMaxResults(1L);
+            // Thử tìm bằng custom URL
+            request = youTube.channels()
+                    .list("id")
+                    .setForUsername(username)
+                    .setKey(apiKey);
 
-            SearchListResponse response = request.execute();
+            response = request.execute();
+
             if (response.getItems() != null && !response.getItems().isEmpty()) {
-                channelId = response.getItems().get(0).getId().getChannelId();
-                logger.info("Đã tìm thấy channel ID từ handle: " + channelId);
-            } else {
-                logger.warning("Không tìm thấy kênh với handle: " + handle);
+                String channelId = response.getItems().get(0).getId();
+                logger.info("Đã tìm thấy channel ID từ custom URL: " + channelId);
+                return channelId;
             }
-        } else {
-            // Định dạng khác (VD: youtube.com/TênKênh)
-            logger.info("Định dạng URL không khớp các mẫu chuẩn, thử xử lý dạng URL tùy chỉnh");
 
-            // Trích xuất phần tùy chỉnh từ URL
-            String[] parts = channelUrl.split("/");
-            if (parts.length > 3) {
-                customUrl = parts[parts.length - 1];
-                if (customUrl.isEmpty() && parts.length > 4) {
-                    customUrl = parts[parts.length - 2]; // Trường hợp có dấu / ở cuối
-                }
-                logger.info("Đã trích xuất tên tùy chỉnh: " + customUrl);
-
-                // Tìm kiếm kênh bằng tên tùy chỉnh
-                YouTube.Search.List request = youTube.search()
-                        .list("snippet")
-                        .setKey(apiKey)
-                        .setQ(customUrl)
-                        .setType("channel")
-                        .setMaxResults(1L);
-
-                SearchListResponse response = request.execute();
-                if (response.getItems() != null && !response.getItems().isEmpty()) {
-                    channelId = response.getItems().get(0).getId().getChannelId();
-                    logger.info("Đã tìm thấy channel ID từ tên tùy chỉnh: " + channelId);
-                } else {
-                    logger.warning("Không tìm thấy kênh với tên tùy chỉnh: " + customUrl);
-                }
-            } else {
-                logger.warning("Không thể phân tích URL: " + channelUrl);
+            logger.warning("Không tìm thấy channel ID cho username: " + username);
+        } // Xử lý URL dạng channel/ID
+        else if (channelUrl.contains("/channel/")) {
+            String channelId = channelUrl.substring(channelUrl.lastIndexOf("/channel/") + 9);
+            // Loại bỏ các tham số query nếu có
+            if (channelId.contains("?")) {
+                channelId = channelId.substring(0, channelId.indexOf("?"));
             }
+            logger.info("Đã tìm thấy channel ID từ URL: " + channelId);
+            return channelId;
         }
 
-        if (channelId == null) {
-            logger.warning("Không tìm được channel ID từ URL: " + channelUrl);
-        } else {
-            logger.info("Channel ID cuối cùng: " + channelId);
-        }
-
-        return channelId;
+        logger.warning("Không tìm thấy channel ID từ URL: " + channelUrl);
+        return null;
     }
 
     public List<com.google.api.services.youtube.model.Video> getLatestVideosFromChannel(String channelId) throws IOException {
