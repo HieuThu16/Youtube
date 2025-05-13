@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Channel Analyzer API</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        color: #333;
+      }
+      h1 {
+        color: #ff0000;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      h2 {
+        margin-top: 30px;
+        color: #666;
+      }
+      code {
+        background-color: #f4f4f4;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+      }
+      pre {
+        background-color: #f4f4f4;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .endpoint {
+        margin-bottom: 30px;
+        padding: 15px;
+        border-left: 4px solid #ff0000;
+        background-color: #f9f9f9;
+      }
+      .method {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 3px;
+        margin-right: 10px;
+        font-weight: bold;
+      }
+      .get {
+        background-color: #61affe;
+        color: white;
+      }
+      .post {
+        background-color: #49cc90;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouTube Channel Analyzer API</h1>
+    <p>
+      Chào mừng đến với YouTube Channel Analyzer API. API này cung cấp các
+      endpoint để phân tích kênh YouTube và trích xuất thông tin video.
+    </p>
+
+    <h2>Các Endpoint có sẵn:</h2>
+
+    <div class="endpoint">
+      <h3><span class="method get">GET</span> /api/youtube/test</h3>
+      <p>Kiểm tra trạng thái hoạt động của API.</p>
+      <p>
+        <strong>Ví dụ:</strong>
+        <a href="/api/youtube/test">/api/youtube/test</a>
+      </p>
+    </div>
+
+    <div class="endpoint">
+      <h3><span class="method post">POST</span> /api/youtube/analyze</h3>
+      <p>Phân tích kênh YouTube và trả về danh sách video với phân tích AI.</p>
+      <p><strong>Request Body:</strong></p>
+      <pre>
+{
+  "channelUrl": "https://www.youtube.com/@Web5Ngay"
+}</pre
+      >
+    </div>
+
+    <div class="endpoint">
+      <h3><span class="method get">GET</span> /api/youtube/videos</h3>
+      <p>Lấy danh sách video đã phân tích từ một kênh YouTube.</p>
+      <p>
+        <strong>Query Parameters:</strong> <code>channelUrl</code> (URL của
+        kênh)
+      </p>
+      <p>
+        <strong>Ví dụ:</strong>
+        <a href="/api/youtube/videos?channelUrl=https://www.youtube.com/@mkbhd"
+          >/api/youtube/videos?channelUrl=https://www.youtube.com/@mkbhd</a
+        >
+      </p>
+    </div>
+
+    <h2>Hướng dẫn sử dụng:</h2>
+    <p>
+      1. Để kiểm tra trạng thái API: Truy cập
+      <a href="/api/youtube/test">/api/youtube/test</a>
+    </p>
+    <p>
+      2. Để phân tích kênh YouTube: Gửi POST request đến
+      <code>/api/youtube/analyze</code> với URL kênh
+    </p>
+    <p>
+      3. Để lấy danh sách video đã phân tích: Truy cập
+      <code>/api/youtube/videos?channelUrl={URL_KÊNH}</code>
+    </p>
+
+    <h2>Lưu ý:</h2>
+    <p>
+      API có thể mất một chút thời gian khi phân tích kênh có nhiều video. Hãy
+      kiên nhẫn chờ đợi kết quả.
+    </p>
+
+    <footer
+      style="
+        margin-top: 50px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+        color: #777;
+      "
+    >
+      <p>YouTube Channel Analyzer API &copy; 2025</p>
+    </footer>
+  </body>
+</html>
