@@ -27,6 +27,17 @@ public class VideoAnalyzerController {
     @Autowired
     private VideoAnalyzerService videoAnalyzerService;
 
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        logger.info("Health check endpoint was called");
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "message", "API is running",
+                "timestamp", System.currentTimeMillis(),
+                "service", "YouTube Analyzer API"
+        ));
+    }
+
     @GetMapping("/test")
     public ResponseEntity<?> test() {
         logger.info("Test endpoint được gọi");

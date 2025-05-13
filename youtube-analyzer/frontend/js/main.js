@@ -70,9 +70,25 @@ document.addEventListener("DOMContentLoaded", function () {
       apiStatusInfo.className = "badge bg-warning"; // Reset and indicate loading
     }
 
-    // Kiểm tra trạng thái API
-    fetch(`${API_BASE_URL}/health`, { method: "GET" })
+    // Kiểm tra trạng thái API với timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 giây timeout
+
+    fetch(`${API_BASE_URL}/health`, {
+      method: "GET",
+      signal: controller.signal,
+      // Tăng tốc kết nối bằng cache: no-store để không lưu cache
+      cache: "no-store",
+      // Tăng tốc kết nối bằng mode: cors để sử dụng CORS
+      mode: "cors",
+      // Headers đảm bảo request nhỏ và nhanh
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => {
+        clearTimeout(timeoutId);
         if (apiStatusInfo) {
           if (response.ok) {
             apiStatusInfo.textContent = "Hoạt động";
@@ -85,8 +101,13 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("API Health check response:", response.status);
       })
       .catch((error) => {
+        clearTimeout(timeoutId);
         if (apiStatusInfo) {
-          apiStatusInfo.textContent = "Không thể kết nối";
+          if (error.name === "AbortError") {
+            apiStatusInfo.textContent = "Timeout - Kết nối quá lâu";
+          } else {
+            apiStatusInfo.textContent = "Không thể kết nối";
+          }
           apiStatusInfo.className = "badge bg-danger";
         }
         console.error("API Health check failed:", error);
@@ -224,12 +245,24 @@ document.addEventListener("DOMContentLoaded", function () {
       const apiUrl = `${API_BASE_URL}/analyze`;
       console.log("Gọi API tại URL:", apiUrl);
 
+      // Tạo controller để có thể hủy request nếu quá lâu
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 giây timeout
+
       fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ channelUrl: normalizedUrl }),
+        signal: controller.signal,
+        cache: "no-store",
+        mode: "cors",
       })
         .then((response) => {
+          clearTimeout(timeoutId);
+
           console.log("Mã trạng thái phản hồi:", response.status);
           console.log("URL API được gọi:", apiUrl);
           console.log(
@@ -275,10 +308,21 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => {
           console.error("Lỗi fetch:", error);
+          clearTimeout(timeoutId); // Đảm bảo xóa timeout
+
           if (apiStatusInfo) {
             apiStatusInfo.textContent = "Lỗi phân tích";
             apiStatusInfo.className = "badge bg-danger";
           }
+
+          if (error.name === "AbortError") {
+            showError(
+              "Yêu cầu bị hủy do quá thời gian chờ (30 giây). Server có thể đang quá tải hoặc ở chế độ ngủ. Vui lòng thử lại sau."
+            );
+            console.log("Request timed out after 30 seconds");
+            return;
+          }
+
           if (error.message === "Failed to fetch") {
             let errorMsg = `Không thể kết nối đến server API tại ${API_BASE_URL}. `;
             if (!isProduction) {
