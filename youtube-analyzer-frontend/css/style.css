@@ -49,8 +49,10 @@ body {
 }
 
 .card-header {
-  background-color: #f1f3f5;
-  border-bottom: 1px solid #e9ecef;
+  background-color: #e7f1ff;
+  border-bottom: 1px solid #b8daff;
+  font-weight: bold;
+  color: #0056b3;
 }
 
 .video-thumbnail {
@@ -117,13 +119,16 @@ body {
 /* CSS cho khung thông tin log */
 .system-log {
   font-size: 0.9rem;
-  background-color: #f8f9fa;
+  background-color: #f0f8ff;
   border-radius: 4px;
-  padding: 10px;
+  padding: 12px;
+  border: 1px solid #b8daff;
+  margin-bottom: 10px;
 }
 
 .system-log strong {
-  color: #495057;
+  color: #0056b3;
+  margin-right: 5px;
 }
 
 .text-success {
