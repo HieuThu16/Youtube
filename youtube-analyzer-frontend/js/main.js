@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoResults = document.getElementById("videoResults");
   const videoCardTemplate = document.getElementById("videoCardTemplate");
 
-  // API URL - Đảm bảo sử dụng URL backend online
-  const API_BASE_URL =
-    "https://youtube-analyzer-backend.onrender.com/api/youtube";
+  // API URL - Cập nhật URL backend chính xác
+  const API_BASE_URL = "https://youtube-5cvw.onrender.com/api/youtube";
 
   // Log URL để kiểm tra
   console.log("API URL được sử dụng:", API_BASE_URL);
