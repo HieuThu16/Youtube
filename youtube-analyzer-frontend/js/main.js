@@ -8,11 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoResults = document.getElementById("videoResults");
   const videoCardTemplate = document.getElementById("videoCardTemplate");
 
-  // API URL - Sẽ được thay đổi khi deploy
-  // Địa chỉ cục bộ: http://localhost:8080/api/youtube
-  // TODO: Cập nhật URL này khi deploy backend
+  // API URL - Đảm bảo sử dụng URL backend online
   const API_BASE_URL =
     "https://youtube-analyzer-backend.onrender.com/api/youtube";
+
+  console.log("Sử dụng API URL:", API_BASE_URL);
 
   // Format date
   function formatDate(dateString) {
